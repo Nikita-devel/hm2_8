@@ -1,29 +1,37 @@
-# Birthday Greetings
+# MongoDB, RabbitMQ, and Email Simulation Project
 
-## Project Description
+## Overview
 
-The task is to implement a function that generates a list of colleagues to greet for the upcoming week based on their birthdays. You are provided with a list of dictionaries named `users`, where each dictionary must have the keys `name` and `birthday`. This structure represents a model of user information, including their names and birthdates. The `name` key contains a string with the user's name, and the `birthday` key contains a `datetime.date` object with the user's birthday.
+This repository documents a Python project focusing on the integration of MongoDB for data storage, RabbitMQ for message queuing, and simulated email distribution. The project is divided into two primary parts.
 
-**Example:**
+## Part 1: MongoDB and Quotes Search
 
-```python
-{"name": "Bill Gates", "birthday": datetime(1955, 10, 28).date()}
-```
+### MongoDB Setup and Data Models
 
-Your goal is to write a function called get_birthdays_per_week that takes the list of users as input and returns a dictionary of users to greet for each day in the next week.
+The project commences with the establishment of a MongoDB Atlas cloud database. Two data models, `Author` and `Quote`, are crafted using the Mongoengine ODM. The `Author` model contains information about authors, while the `Quote` model stores quotes with corresponding tags and author references.
 
-The format of the dictionary returned by the get_birthdays_per_week function is as follows:
+### Data Seeding and Search Script
 
-```python
-{'Monday': ['Bill', 'Jan'], 'Wednesday': ['Kim']}
-```
+A script, `seed_mongo.py`, is implemented to load data from JSON files (`authors.json` and `quotes.json`) into the MongoDB database. Additionally, a search script, `search_quotes.py`, is provided for users to search for quotes based on author names, tags, or a combination of tags.
 
-The keys of the dictionary represent the days of the week: "Monday", "Tuesday", "Wednesday", "Thursday", "Friday". The values are lists of users with birthdays for the week ahead, including the current day.
+### Additional Tasks
 
-Note:
+The search script supports shorthand commands for convenience (`name:st` instead of `name:Steve Martin`). Caching of search results is implemented using Redis, enhancing performance by retrieving results from the cache.
 
-- If the script is run on a Wednesday, for instance, the keys "Wednesday", "Thursday", "Friday" will contain birthdays for the current week, while the keys "Monday", "Tuesday" will store birthdays for the next week. Birthdays falling on the weekend are included in the "Monday" key.
-- The function should handle cases where a birthday has already occurred in the current year.
-- The function should correctly account for weekends and shift them to Monday.
-- The function should work correctly with an empty list of users.
-- The function should handle situations where all birthdays have already passed in the current year.
+## Part 2: RabbitMQ and Email Simulation
+
+### RabbitMQ Setup and Contact Model
+
+The second part centers around simulating email distribution using RabbitMQ. Two scripts, `producer.py` and `consumer.py`, are developed for this purpose. The `Contact` model, designed with the Mongoengine ODM, encompasses fields such as full name, email, phone number, and a logical field indicating whether a message has been sent.
+
+### Email Simulation Workflow
+
+The `producer.py` script generates fake contacts, writes them to the MongoDB database, and places messages in the RabbitMQ queue, each containing the ObjectID of the created contact. Subsequently, the `consumer.py` script processes these messages, simulates sending emails (via a placeholder function), and updates the logical field accordingly.
+
+### Additional Task
+
+An additional feature is introduced to manage user preferences for message delivery, allowing messages to be sent via both email and SMS based on contact preferences. Two distinct queues (`consumer_sms.py` and `consumer_email.py`) are established to handle contacts for SMS and email, respectively.
+
+## Conclusion
+
+This project serves as a comprehensive demonstration of the integration of MongoDB, RabbitMQ, and simulated email distribution. It underscores aspects such as data modeling, database seeding, search functionalities, and efficient message queuing for effective communication simulation. The incorporation of advanced features like Redis caching and user preferences contributes to the project's robust and versatile nature.
